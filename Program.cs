@@ -5,6 +5,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using tps_result_to_stul_tulos.TPSResultsReader;
+using tps_result_to_stul_tulos.STULParitReader;
+using tps_result_to_stul_tulos.STULTulosWriter;
 
 namespace tps_result_to_stul_tulos
 {
@@ -12,18 +14,45 @@ namespace tps_result_to_stul_tulos
     {
         static void Main(string[] args)
         {
-            string inputFileName = GetArgument(args, "-i", "results.xml");
-            if(!File.Exists(inputFileName))
+            // result.xml tiedosto
+            string resultFileName = GetArgument(args, "-r", "results.xml");
+            if(!File.Exists(resultFileName))
             {
-                Console.WriteLine($"Virhe: Tiedostoa {inputFileName} ei löydy.");
+                Console.WriteLine($"Virhe: Tiedostoa {resultFileName} ei löydy.");
                 Environment.Exit(-1);
             }
-            Console.WriteLine($"Input file: {inputFileName}");
-            string outputFileName = GetArgument(args, "-o", "tulos.txt");
-            Console.WriteLine($"Output file: {outputFileName}");
+            Console.WriteLine($"Results tiedosto: {resultFileName}");
+            ResultsReader resultsReader = new ResultsReader(resultFileName);
 
-            ResultsReader reader = new ResultsReader(inputFileName);
+            // parit.txt tiedosto
+            string paritFileName = GetArgument(args, "-p", "parit.txt");
+            if(!File.Exists(paritFileName))
+            {
+                Console.WriteLine($"Virhe: Tiedostoa {paritFileName} ei löydy.");
+                Environment.Exit(-1);
+            }
+            Console.WriteLine($"Parit tiedosto: {paritFileName}");
+            ParitReader paritReader = new ParitReader(paritFileName);
 
+            // tulos.txt tiedosto
+            string tulosFileName = GetArgument(args, "-t", "tulos.txt");
+            Console.WriteLine($"Tulos tiedosto: {tulosFileName}");
+            TulosWriter tulosWriter = new TulosWriter(tulosFileName);
+
+            // -------------
+            foreach(ParitLine pari in paritReader.ParitLines)
+            {
+                var tulos = new TulosLine(){
+                    CoupleCode = pari.CoupleCode,
+                    CoupleNames = pari.CoupleNames,
+                    ClubName = pari.ClubName,
+                    ClubTown = pari.ClubTown,
+                    AgeGroup = pari.AgeGroup
+                };
+                tulosWriter.TulosLines.Add(tulos);
+            }
+
+            tulosWriter.WriteAll();
         }
 
         static string GetArgument(IEnumerable<string> args, string option, string defaultValue)

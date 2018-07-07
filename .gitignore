@@ -6,6 +6,7 @@
 # Input/output files
 results.xml
 tulos.txt
+parit.txt
 
 # User-specific files
 *.suo
