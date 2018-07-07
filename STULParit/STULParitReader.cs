@@ -6,18 +6,18 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using CsvHelper;
 
-namespace tps_result_to_stul_tulos.STULParitReader
+namespace tps_result_to_stul_tulos.STULParit
 {
-    public class ParitReader
+    public class STULParitReader
     {
         private const string DefaultCsvDelimiter = ",";
         private string ParitFileName { get; set; }
-        public IList<ParitLine> ParitLines { get; set; }
+        public IList<STULParitLine> ParitLines { get; set; }
 
-        public ParitReader(string paritFileName)
+        public STULParitReader(string paritFileName)
         {
             ParitFileName = paritFileName;
-            ParitLines = new List<ParitLine>();
+            ParitLines = new List<STULParitLine>();
             ReadAll();
         }
 
@@ -29,8 +29,8 @@ namespace tps_result_to_stul_tulos.STULParitReader
                 var reader = new CsvReader(stream);
                 reader.Configuration.HasHeaderRecord = false;
 
-                var records = reader.GetRecords<ParitLine>();
-                foreach(ParitLine pari in records)
+                var records = reader.GetRecords<STULParitLine>();
+                foreach(STULParitLine pari in records)
                 {
                     ParitLines.Add(pari);
                 }

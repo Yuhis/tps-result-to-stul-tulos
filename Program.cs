@@ -4,9 +4,9 @@ using System.Text;
 using System.Linq;
 using System.Collections.Generic;
 using System.Xml.Linq;
-using tps_result_to_stul_tulos.TPSResultsReader;
-using tps_result_to_stul_tulos.STULParitReader;
-using tps_result_to_stul_tulos.STULTulosWriter;
+using tps_result_to_stul_tulos.TPSResults;
+using tps_result_to_stul_tulos.STULParit;
+using tps_result_to_stul_tulos.STULTulos;
 
 namespace tps_result_to_stul_tulos
 {
@@ -32,7 +32,7 @@ namespace tps_result_to_stul_tulos
                 Environment.Exit(-1);
             }
             Console.WriteLine($"Parit tiedosto: {paritFileName}");
-            ParitReader paritReader = new ParitReader(paritFileName);
+            STULParitReader paritReader = new STULParitReader(paritFileName);
 
             // tulos.txt tiedosto
             string tulosFileName = GetArgument(args, "-t", "tulos.txt");
@@ -40,7 +40,7 @@ namespace tps_result_to_stul_tulos
             TulosWriter tulosWriter = new TulosWriter(tulosFileName);
 
             // -------------
-            foreach(ParitLine pari in paritReader.ParitLines)
+            foreach(STULParitLine pari in paritReader.ParitLines)
             {
                 var tulos = new TulosLine(){
                     CoupleCode = pari.CoupleCode,

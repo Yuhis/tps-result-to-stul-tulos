@@ -5,9 +5,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-namespace tps_result_to_stul_tulos.STULParitReader
+namespace tps_result_to_stul_tulos.STULParit
 {
-    public class ParitLine
+    public class STULParitLine
     {
         public string CoupleCode { get; set; } = "";
         public int AreaCode { get; set; } = 0;

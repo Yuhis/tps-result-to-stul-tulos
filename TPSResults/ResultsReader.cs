@@ -5,7 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-namespace tps_result_to_stul_tulos.TPSResultsReader
+namespace tps_result_to_stul_tulos.TPSResults
 {
     public class ResultsReader
     {

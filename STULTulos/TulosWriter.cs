@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using CsvHelper;
 
-namespace tps_result_to_stul_tulos.STULTulosWriter
+namespace tps_result_to_stul_tulos.STULTulos
 {
     public class TulosWriter
     {
