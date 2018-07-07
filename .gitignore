@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Input/output files
+results.xml
+tulos.txt
+
 # User-specific files
 *.suo
 *.user

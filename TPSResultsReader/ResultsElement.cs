@@ -5,7 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-namespace tps_result_to_stul_tulos.Elements
+namespace tps_result_to_stul_tulos.TPSResultsReader
 {
     public class ResultsElement
     {
@@ -71,13 +71,10 @@ namespace tps_result_to_stul_tulos.Elements
 
         private Missing MapMissing(string missing)
         {
-            if(string.IsNullOrWhiteSpace(missing))
-            {
-                return Missing.NotMissing;
-            }
-
             switch(missing)
             {
+                case "0":
+                    return Missing.NotMissing;
                 case "1":
                     return Missing.Dancing;
                 case "2":

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-namespace tps_result_to_stul_tulos.Elements
+namespace tps_result_to_stul_tulos.TPSResultsReader
 {
     public class EventElement
     {
