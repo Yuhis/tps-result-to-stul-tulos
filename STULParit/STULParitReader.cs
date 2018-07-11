@@ -28,6 +28,7 @@ namespace tps_result_to_stul_tulos.STULParit
             {
                 var reader = new CsvReader(stream);
                 reader.Configuration.HasHeaderRecord = false;
+                reader.Configuration.RegisterClassMap<STULParitLineClassMap>();
 
                 var records = reader.GetRecords<STULParitLine>();
                 foreach(STULParitLine pari in records)

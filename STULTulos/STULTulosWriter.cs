@@ -8,16 +8,16 @@ using CsvHelper;
 
 namespace tps_result_to_stul_tulos.STULTulos
 {
-    public class TulosWriter
+    public class STULTulosWriter
     {
         private const string DefaultCsvDelimiter = ",";
         private string TulosFileName { get; set; }
-        public IList<TulosLine> TulosLines { get; set; }
+        public IList<STULTulosLine> TulosLines { get; set; }
 
-        public TulosWriter(string tulosFileName)
+        public STULTulosWriter(string tulosFileName)
         {
             TulosFileName = tulosFileName;
-            TulosLines = new List<TulosLine>();
+            TulosLines = new List<STULTulosLine>();
         }
         public void WriteAll()
         {
@@ -27,10 +27,11 @@ namespace tps_result_to_stul_tulos.STULTulos
                 var writer = new CsvWriter(stream);
                 writer.Configuration.Delimiter = DefaultCsvDelimiter;
                 writer.Configuration.QuoteAllFields = true;
+                writer.Configuration.RegisterClassMap<STULTulosLineClassMap>();
 
-                foreach (TulosLine tulos in TulosLines)
+                foreach (STULTulosLine tulos in TulosLines)
                 {
-                    writer.WriteRecord<TulosLine>(tulos);
+                    writer.WriteRecord<STULTulosLine>(tulos);
                     writer.NextRecord();
                 }
             }
