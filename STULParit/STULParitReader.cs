@@ -13,11 +13,13 @@ namespace tps_result_to_stul_tulos.STULParit
         private const string DefaultCsvDelimiter = ",";
         private string ParitFileName { get; set; }
         public IList<STULParitLine> ParitLines { get; set; }
+        public IList<string> LineErrors { get; set; }
 
         public STULParitReader(string paritFileName)
         {
             ParitFileName = paritFileName;
             ParitLines = new List<STULParitLine>();
+            LineErrors = new List<string>();
             ReadAll();
         }
 
@@ -34,6 +36,9 @@ namespace tps_result_to_stul_tulos.STULParit
                 foreach(STULParitLine pari in records)
                 {
                     ParitLines.Add(pari);
+                    foreach(string e in pari.Errors){
+                        LineErrors.Add(e);
+                    }
                 }
             }
         }

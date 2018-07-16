@@ -34,6 +34,9 @@ namespace tps_result_to_stul_tulos
             }
             Console.WriteLine($"Parit tiedosto: {paritFileName}");
             STULParitReader paritReader = new STULParitReader(paritFileName);
+            foreach(string e in paritReader.LineErrors){
+                Console.WriteLine($"Virhe: {e}");
+            }
 
             // parit.tps.txt tiedosto
             string tpsParitFileName = GetArgument(args, "-s", "parit.tps.txt");
@@ -58,10 +61,10 @@ namespace tps_result_to_stul_tulos
                 tulosWriter.TulosLines.Add(tulos);
 
                 var tps = new TPSParitLine(){
-                    FirstNameMan = "",
-                    LastNameMan = "",
-                    FirstNameWoman = "",
-                    LastNameWoman = "",
+                    FirstNameMan = pari.ManFirstName,
+                    LastNameMan = pari.ManLastName,
+                    FirstNameWoman = pari.WomanFirstName,
+                    LastNameWoman = pari.WomanLastName,
                     Club = $"{pari.ClubName} / {pari.ClubTown}",
                     MinMan = pari.CoupleCode,
                     MinWoman = pari.CoupleCode
