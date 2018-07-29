@@ -7,14 +7,14 @@ using System.Xml.Linq;
 
 namespace tps_result_to_stul_tulos.TPSResults
 {
-    public class ResultsReader
+    public class TPSResultsReader
     {
-        public EventElement Event { get; private set; }
+        public TPSEventElement Event { get; private set; }
 
-        public ResultsReader(string resultFileName)
+        public TPSResultsReader(string resultFileName)
         {
             XDocument xdoc = XDocument.Parse(File.ReadAllText(resultFileName, Encoding.UTF8));
-            Event = new EventElement(xdoc.Element("Event"));
+            Event = new TPSEventElement(xdoc.Element("Event"));
         }
     }
 }

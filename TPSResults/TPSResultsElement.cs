@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace tps_result_to_stul_tulos.TPSResults
 {
-    public class ResultsElement
+    public class TPSResultsElement
     {
         public string EventCode { get; private set; } = "";
         public string CompetitionCode { get; private set; } = "";
@@ -23,7 +23,7 @@ namespace tps_result_to_stul_tulos.TPSResults
         public int RoundsDanced { get; set; } = 0;
 
 
-        public ResultsElement(XElement xe)
+        public TPSResultsElement(XElement xe)
         {
             EventCode = xe.Element("EventCode").Value;
             CompetitionCode = xe.Element("CompCode").Value;

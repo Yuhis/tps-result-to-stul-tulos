@@ -7,17 +7,17 @@ using System.Xml.Linq;
 
 namespace tps_result_to_stul_tulos.TPSResults
 {
-    public class EventElement
+    public class TPSEventElement
     {
-        public IList<ResultsElement> Results { get; set; }
+        public IList<TPSResultsElement> Results { get; set; }
 
-        public EventElement(XElement xe)
+        public TPSEventElement(XElement xe)
         {
-            Results = new List<ResultsElement>();
+            Results = new List<TPSResultsElement>();
             var resultElements = from el in xe.Elements("Results") select el;
             foreach(XElement r in resultElements)
             {
-                Results.Add(new ResultsElement(r));
+                Results.Add(new TPSResultsElement(r));
             }
         }
     }
