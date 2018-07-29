@@ -14,7 +14,8 @@ namespace tps_result_to_stul_tulos.ProgramTulos
     {
         private STULParitReader _stulParitReader;
         private TPSResultsReader _tpsResultsReader;
-        private STULTulosWriter _stulTulosWriter;
+        private IDictionary<string, TPSEvent> _tpsEvents;
+        private string _stulTulosFileName = "";
 
         public ProgramTulos(string stulParitFileName, string tpsResultsFileName, string stulTulosFileName)
         {
@@ -39,26 +40,111 @@ namespace tps_result_to_stul_tulos.ProgramTulos
             Console.WriteLine($"Results tiedosto: {tpsResultsFileName}");
             _tpsResultsReader = new TPSResultsReader(tpsResultsFileName);
 
-            // tulos.txt tiedosto
-            Console.WriteLine($"Tulos tiedosto: {stulTulosFileName}");
-            _stulTulosWriter = new STULTulosWriter(stulTulosFileName);
+            // tulos.txt tiedoston nimi
+            _stulTulosFileName = stulTulosFileName;
+
+            _tpsEvents = new Dictionary<string, TPSEvent>();
         }
 
         public void WriteTulosTxt()
         {
-            foreach(STULParitLine pari in _stulParitReader.ParitLines)
+            SetResults();
+
+            if (0 == _tpsEvents.Count)
             {
-                var tulos = new STULTulosLine(){
-                    CoupleCode = pari.CoupleCode,
-                    CoupleNames = pari.CoupleNames,
-                    ClubName = pari.ClubName,
-                    ClubTown = pari.ClubTown,
-                    AgeGroup = pari.AgeGroup
-                };
-                _stulTulosWriter.TulosLines.Add(tulos);
+                Console.WriteLine("Ei tuloksia");
+                return;
             }
 
-            _stulTulosWriter.WriteAll();
+            bool multipleEvents = false;
+            if (_tpsEvents.Count > 1)
+            {
+                multipleEvents = true;
+            }
+
+            foreach(KeyValuePair<string,TPSEvent> tpsEvent in _tpsEvents)
+            {
+                string filename = _stulTulosFileName;
+                if(multipleEvents)
+                {
+                    filename = tpsEvent.Key + _stulTulosFileName;
+                }
+                WriteTulosTxtForEvent(tpsEvent.Value, filename);
+            }
+        }
+
+        private void SetResults()
+        {
+            foreach(TPSResultsElement element in _tpsResultsReader.Event.Results)
+            {
+                if(!_tpsEvents.ContainsKey(element.EventCode))
+                {
+                    _tpsEvents[element.EventCode] = new TPSEvent(element.EventCode);
+                }
+                TPSEvent tpsEvent = _tpsEvents[element.EventCode];
+
+                TPSCompetition tpsCompetition = tpsEvent.Competitions.SingleOrDefault(c => c.CompetitionCode == element.CompetitionCode);
+                if(null == tpsCompetition)
+                {
+                    tpsCompetition = new TPSCompetition(element.CompetitionCode);
+                    tpsCompetition.CompetitionLevel = element.CompetitionLevel;
+                    tpsCompetition.CompetitionType = element.CompetitionType.ToString();
+                    tpsCompetition.TotalCouples = element.TotalCouples;
+                    tpsEvent.Competitions.Add(tpsCompetition);
+                }
+
+                TPSCouple tpsCouple = tpsCompetition.Couples.SingleOrDefault(c => c.CoupleCode == element.CoupleCode);
+                if(null == tpsCouple)
+                {
+                    tpsCouple = new TPSCouple(element.CoupleCode);
+                    tpsCouple.CoupleNumber = element.CoupleNumber;
+                    tpsCouple.CoupleNames = element.CoupleNames;
+                    tpsCouple.Position1 = element.Position1;
+                    tpsCouple.Position2 = element.Position2;
+                    tpsCouple.Missing = (int)element.Missing; // FixThis
+                    tpsCouple.RoundsDanced = element.RoundsDanced;
+                    tpsCompetition.Couples.Add(tpsCouple);
+                }
+
+
+            }
+        }
+
+        private void WriteTulosTxtForEvent(TPSEvent tpsEvent, string tulosTxtFileName)
+        {
+            string eventName = "(tyhjä)";
+            if(!string.IsNullOrEmpty(tpsEvent.EventCode))
+            {
+                eventName = tpsEvent.EventCode;
+            }
+            Console.WriteLine($"Tapahtuma: {eventName}");
+            Console.WriteLine($"Tulostiedosto: {tulosTxtFileName}");
+            STULTulosWriter stulTulosWriter = new STULTulosWriter(tulosTxtFileName);
+
+            // foreach(STULParitLine pari in _stulParitReader.ParitLines)
+            // {
+            //     var tulos = new STULTulosLine(){
+            //         CoupleCode = pari.CoupleCode,
+            //         CoupleNames = pari.CoupleNames,
+            //         ClubName = pari.ClubName,
+            //         ClubTown = pari.ClubTown,
+            //         AgeGroup = pari.AgeGroup
+            //     };
+            //     _stulTulosWriter.TulosLines.Add(tulos);
+            // }
+
+            foreach(TPSCompetition comp in tpsEvent.Competitions)
+            {
+                Console.WriteLine($"Competition: {comp.CompetitionCode}");
+                Console.WriteLine($"    level: {comp.CompetitionLevel}");
+                Console.WriteLine($"     type: {comp.CompetitionType}");
+                Console.WriteLine($"  couples: {comp.TotalCouples}");
+                Console.WriteLine($"   rounds: {comp.Rounds.Count}");
+                Console.WriteLine($"  couples: {comp.Couples.Count}");
+
+            }
+
+            stulTulosWriter.WriteAll();
         }
     }
 }

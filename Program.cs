@@ -42,6 +42,7 @@ namespace tps_result_to_stul_tulos
                         : "parit.tps.txt";
 
                     var program = new ProgramParit.ProgramParit(paritTiedosto, paritTpsTiedosto);
+                    program.WriteTPSParit();
                     return 1;
                 });
             });
@@ -68,6 +69,7 @@ namespace tps_result_to_stul_tulos
                         : "tulos.txt";
 
                     var program = new ProgramTulos.ProgramTulos(paritTiedosto, resultsTiedosto, tulosTiedosto);
+                    program.WriteTulosTxt();
                     return 1;
                 });
             });
