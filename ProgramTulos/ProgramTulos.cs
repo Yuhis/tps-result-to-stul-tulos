@@ -83,12 +83,13 @@ namespace tps_result_to_stul_tulos.ProgramTulos
                 }
                 TPSEvent tpsEvent = _tpsEvents[element.EventCode];
 
-                TPSCompetition tpsCompetition = tpsEvent.Competitions.SingleOrDefault(c => c.CompetitionCode == element.CompetitionCode);
+                TPSCompetition tpsCompetition = tpsEvent.Competitions.SingleOrDefault(
+                    c => c.CompetitionCode == element.CompetitionCode && c.CompetitionType == element.CompetitionType.ToString());
                 if(null == tpsCompetition)
                 {
                     tpsCompetition = new TPSCompetition(element.CompetitionCode);
                     tpsCompetition.CompetitionLevel = element.CompetitionLevel;
-                    tpsCompetition.CompetitionType = element.CompetitionType.ToString();
+                    tpsCompetition.CompetitionType = element.CompetitionType.ToString(); // TODO: FixThis
                     tpsCompetition.TotalCouples = element.TotalCouples;
                     tpsEvent.Competitions.Add(tpsCompetition);
                 }
@@ -101,12 +102,19 @@ namespace tps_result_to_stul_tulos.ProgramTulos
                     tpsCouple.CoupleNames = element.CoupleNames;
                     tpsCouple.Position1 = element.Position1;
                     tpsCouple.Position2 = element.Position2;
-                    tpsCouple.Missing = (int)element.Missing; // FixThis
+                    tpsCouple.Missing = (int)element.Missing; // TODO: FixThis
                     tpsCouple.RoundsDanced = element.RoundsDanced;
                     tpsCompetition.Couples.Add(tpsCouple);
                 }
 
-
+                int coupleRoundNbr = tpsCouple.RoundsDanced;
+                TPSCompetitionRound round = tpsCompetition.Rounds.SingleOrDefault(r => r.RoundNumber == coupleRoundNbr);
+                if(null == round)
+                {
+                    round = new TPSCompetitionRound(coupleRoundNbr);
+                    tpsCompetition.Rounds.Add(round);
+                }
+                round.Couples.Add(tpsCouple);
             }
         }
 
@@ -121,17 +129,64 @@ namespace tps_result_to_stul_tulos.ProgramTulos
             Console.WriteLine($"Tulostiedosto: {tulosTxtFileName}");
             STULTulosWriter stulTulosWriter = new STULTulosWriter(tulosTxtFileName);
 
-            // foreach(STULParitLine pari in _stulParitReader.ParitLines)
-            // {
-            //     var tulos = new STULTulosLine(){
-            //         CoupleCode = pari.CoupleCode,
-            //         CoupleNames = pari.CoupleNames,
-            //         ClubName = pari.ClubName,
-            //         ClubTown = pari.ClubTown,
-            //         AgeGroup = pari.AgeGroup
-            //     };
-            //     _stulTulosWriter.TulosLines.Add(tulos);
-            // }
+            foreach(TPSCompetition tpsCompetition in tpsEvent.Competitions)
+            {
+                foreach(TPSCompetitionRound round in tpsCompetition.Rounds)
+                {
+                    foreach(TPSCouple couple in round.Couples)
+                    {
+                        STULParitLine stulPari = _stulParitReader.ParitLines.SingleOrDefault(p => p.CoupleCode == couple.CoupleCode);
+                        if(null == stulPari)
+                        {
+                            stulPari = new STULParitLine()
+                            {
+                                CoupleCode = couple.CoupleCode,
+                                CoupleNames = couple.CoupleNames
+                            };
+                            Console.WriteLine($"Virhe: Paria {couple.CoupleNames} ei ole paritiedostossa");
+                        }
+                        string result = "";
+                        if(couple.RoundsDanced == tpsCompetition.Rounds.Count)
+                        {
+                            // Final round
+                            if(couple.RoundsDanced > 1)
+                            {
+                                result = $"{couple.Position1}/{round.Couples.Count}+{couple.RoundsDanced-1}";
+                            }
+                            else
+                            {
+                                result = $"{couple.Position1}/{round.Couples.Count}";
+                            }
+                        }
+                        else
+                        {
+                            // Qualification round
+                            result = $"+{couple.RoundsDanced}";
+                        }
+                        var tulos = new STULTulosLine()
+                        {
+                            CoupleCode = couple.CoupleCode,
+                            CoupleNumber = couple.CoupleNumber,
+                            CoupleNames = stulPari.CoupleNames,
+                            ClubName = stulPari.ClubName,
+                            ClubTown = stulPari.ClubTown,
+                            AgeGroup = stulPari.AgeGroup,
+                            Category = "",
+                            Result1 = "",
+                            Result2 = ""
+                        };
+                        if(tpsCompetition.CompetitionType == "Latin")
+                        {
+                            tulos.Result1 = result;
+                        }
+                        else
+                        {
+                            tulos.Result1 = result;
+                        }
+                    stulTulosWriter.TulosLines.Add(tulos);
+                    }
+                }
+            }
 
             foreach(TPSCompetition comp in tpsEvent.Competitions)
             {
@@ -141,7 +196,6 @@ namespace tps_result_to_stul_tulos.ProgramTulos
                 Console.WriteLine($"  couples: {comp.TotalCouples}");
                 Console.WriteLine($"   rounds: {comp.Rounds.Count}");
                 Console.WriteLine($"  couples: {comp.Couples.Count}");
-
             }
 
             stulTulosWriter.WriteAll();

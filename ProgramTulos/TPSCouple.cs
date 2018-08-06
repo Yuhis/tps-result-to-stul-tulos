@@ -9,7 +9,7 @@ namespace tps_result_to_stul_tulos.ProgramTulos
 {
     public class TPSCouple
     {
-        public string CoupleCode { get; private set; }
+        public int CoupleCode { get; private set; }
         public int CoupleNumber { get; set; } = 0;
         public string CoupleNames { get; set; } = "";
         public int Position1 { get; set; } = 0;
@@ -17,7 +17,7 @@ namespace tps_result_to_stul_tulos.ProgramTulos
         public int Missing { get; set; } = 0;
         public int RoundsDanced { get; set; } = 0;
 
-        public TPSCouple(string coupleCode)
+        public TPSCouple(int coupleCode)
         {
             CoupleCode = coupleCode;
         }

@@ -14,7 +14,7 @@ namespace tps_result_to_stul_tulos.TPSResults
         public string CompetitionLevel { get; private set; } = "";
         public CompetitionType CompetitionType { get; private set; } = CompetitionType.TenDance;
         public int TotalCouples { get; private set; } = 0;
-        public string CoupleCode { get; private set; } = "";
+        public int CoupleCode { get; private set; } = 0;
         public int CoupleNumber { get; private set; } = 0;
         public string CoupleNames { get; private set; } = "";
         public int Position1 { get; private set; } = 0;
@@ -30,7 +30,7 @@ namespace tps_result_to_stul_tulos.TPSResults
             CompetitionLevel = xe.Element("CompLevel").Value;
             CompetitionType = MapCompetitionType(xe.Element("CompType").Value);
             TotalCouples = ParseInteger(xe.Element("TotalCouples").Value, "TotalCouples");
-            CoupleCode = xe.Element("CoupleCode").Value;
+            CoupleCode = ParseInteger(xe.Element("CoupleCode").Value, "CoupleCode");
             CoupleNumber = ParseInteger(xe.Element("CoupleNumber").Value, "CoupleNumber");
             CoupleNames = xe.Element("Names").Value;
             Position1 = ParseInteger(xe.Element("Position1").Value, "Position1");

@@ -29,7 +29,7 @@ namespace tps_result_to_stul_tulos.STULTulos
                 writer.Configuration.QuoteAllFields = true;
                 writer.Configuration.RegisterClassMap<STULTulosLineClassMap>();
 
-                foreach (STULTulosLine tulos in TulosLines)
+                foreach (STULTulosLine tulos in TulosLines.OrderBy(t => t.CoupleNumber))
                 {
                     writer.WriteRecord<STULTulosLine>(tulos);
                     writer.NextRecord();
