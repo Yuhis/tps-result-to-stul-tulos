@@ -14,12 +14,20 @@ namespace tps_result_to_stul_tulos.ProgramTulos
         public string CoupleNames { get; set; } = "";
         public int Position1 { get; set; } = 0;
         public int Position2 { get; set; } = 0;
-        public int Missing { get; set; } = 0;
+        public TPSMissing Missing { get; set; } = TPSMissing.NotMissing;
         public int RoundsDanced { get; set; } = 0;
 
         public TPSCouple(int coupleCode)
         {
             CoupleCode = coupleCode;
         }
+    }
+
+    public enum TPSMissing
+    {
+        NotMissing = 0,
+        Dancing = 1,
+        Excused = 2,
+        Missing = 3
     }
 }

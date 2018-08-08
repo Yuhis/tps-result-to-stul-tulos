@@ -11,16 +11,15 @@ namespace tps_result_to_stul_tulos.ProgramTulos
     {
         public string CompetitionCode { get; private set; }
         public string CompetitionLevel { get; set; } = "";
-        public string CompetitionType { get; set; } = "";
+        public TPSCompetitionType CompetitionType { get; set; } = TPSCompetitionType.TenDance;
         public int TotalCouples { get; set; } = 0;
         public IList<TPSCompetitionRound> Rounds { get; private set; }
-        public IList<TPSCouple> Couples { get; private set; }
 
-        public TPSCompetition(string competitionCode)
+        public TPSCompetition(string competitionCode, TPSCompetitionType competitionType)
         {
             CompetitionCode = competitionCode;
+            CompetitionType = competitionType;
             Rounds = new List<TPSCompetitionRound>();
-            Couples = new List<TPSCouple>();
         }
     }
 
@@ -35,4 +34,13 @@ namespace tps_result_to_stul_tulos.ProgramTulos
             Couples = new List<TPSCouple>();
         }
     }
+
+    public enum TPSCompetitionType
+    {
+        TenDance = 0,
+        Standard,
+        Latin
+    }
+
+    
 }
